@@ -6,6 +6,7 @@ import com.explicacionD1.projectD1Campuslands.mapper.VentaMapper;
 import com.explicacionD1.projectD1Campuslands.model.Venta;
 import com.explicacionD1.projectD1Campuslands.repository.VentaRepository;
 import com.explicacionD1.projectD1Campuslands.service.VentaService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,20 +33,20 @@ public class VentaServiceImpl implements VentaService {
 
     @Override
     public VentaResponse obtenerPorId(Long id) {
-        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró la venta"));
+        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró la venta"));
         return ventaMapper.entityToDto(venta);
     }
 
     @Override
     public VentaResponse actualizar(Long id, VentaRequest dto) {
-        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró la venta a actualizar"));
+        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró la venta a actualizar"));
         ventaMapper.updateEntityToDto(venta, dto);
         return ventaMapper.entityToDto(ventaRepository.save(venta));
     }
 
     @Override
     public void eliminar(Long id) {
-        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró la venta a eliminar"));
+        Venta venta= ventaRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró la venta a eliminar"));
         ventaRepository.delete(venta);
     }
 

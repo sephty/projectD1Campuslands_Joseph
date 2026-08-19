@@ -6,6 +6,7 @@ import com.explicacionD1.projectD1Campuslands.mapper.ProductoMapper;
 import com.explicacionD1.projectD1Campuslands.model.Producto;
 import com.explicacionD1.projectD1Campuslands.repository.ProductoRepository;
 import com.explicacionD1.projectD1Campuslands.service.ProductoService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,21 +33,21 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public ProductoResponse obtenerrPorId(Long id) {
-        Producto producto=productoRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró el producto"));
+        Producto producto=productoRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró el producto"));
         return productoMapper.entityToDto(producto);
     }
 
     @Override
     //                                      Entity old, Entity new
     public ProductoResponse actualizarProducto(Long id, ProductoRequest dto) {
-        Producto producto=productoRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró el producto a actualizar"));
+        Producto producto=productoRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró el producto a actualizar"));
         productoMapper.updateEntityToDto(producto, dto);
         return productoMapper.entityToDto(productoRepository.save(producto));
     }
 
     @Override
     public void eliminarProducto(Long id) {
-        Producto producto=productoRepository.findById(id).orElseThrow(()-> new RuntimeException("No se encontró el producto a eliminar"));
+        Producto producto=productoRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("No se encontró el producto a eliminar"));
         productoRepository.delete(producto);
     }
 

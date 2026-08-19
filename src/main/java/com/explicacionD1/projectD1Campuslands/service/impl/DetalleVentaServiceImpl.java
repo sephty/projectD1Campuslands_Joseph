@@ -12,6 +12,7 @@ import com.explicacionD1.projectD1Campuslands.repository.DetalleVentaRepository;
 import com.explicacionD1.projectD1Campuslands.repository.ProductoRepository;
 import com.explicacionD1.projectD1Campuslands.repository.VentaRepository;
 import com.explicacionD1.projectD1Campuslands.service.DetalleVentaService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +40,8 @@ public class DetalleVentaServiceImpl implements DetalleVentaService {
      * */
     public DetalleVentaResponse crear(DetalleVentaRequest dto) {
         System.out.println("ENTRA");
-        Producto producto = productoRepository.findById(dto.productoId()).orElseThrow(() -> new RuntimeException("No existe dicho producto a vender"));
-        Venta venta = ventaRepository.findById(dto.ventaId()).orElseThrow(() -> new RuntimeException("No existe la venta a relacionar con el detalle."));
+        Producto producto = productoRepository.findById(dto.productoId()).orElseThrow(() -> new EntityNotFoundException("No existe dicho producto a vender"));
+        Venta venta = ventaRepository.findById(dto.ventaId()).orElseThrow(() -> new EntityNotFoundException("No existe la venta a relacionar con el detalle."));
         DetalleVenta detalleVenta = detalleVentaMapper.dtoToEntity(dto, producto, venta);
         return detalleVentaMapper.entityToDto(detalleVentaRepository.save(detalleVenta), ventaMapper.entityToDto(venta), productoMapper.entityToDto(producto));
     }
@@ -48,16 +49,16 @@ public class DetalleVentaServiceImpl implements DetalleVentaService {
     @Override
     //                           Entidad(dv) vieja, entidad(dv) nueva.
     public DetalleVentaResponse actualizar(Long id, DetalleVentaRequest dto) {
-        DetalleVenta detalleVenta = detalleVentaRepository.findById(id).orElseThrow(() -> new RuntimeException("No se encuentra el detalle de venta a actualizar"));
-        Producto producto = productoRepository.findById(dto.productoId()).orElseThrow(() -> new RuntimeException("No existe dicho producto a vender"));
-        Venta venta = ventaRepository.findById(dto.ventaId()).orElseThrow(() -> new RuntimeException("No existe la venta a relacionar con el detalle."));
+        DetalleVenta detalleVenta = detalleVentaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No se encuentra el detalle de venta a actualizar"));
+        Producto producto = productoRepository.findById(dto.productoId()).orElseThrow(() -> new EntityNotFoundException("No existe dicho producto a vender"));
+        Venta venta = ventaRepository.findById(dto.ventaId()).orElseThrow(() -> new EntityNotFoundException("No existe la venta a relacionar con el detalle."));
         detalleVentaMapper.updateEntityToDto(detalleVenta, dto, venta, producto);
         return detalleVentaMapper.entityToDto(detalleVentaRepository.save(detalleVenta), ventaMapper.entityToDto(venta), productoMapper.entityToDto(producto));
     }
 
     @Override
     public void eliminar(Long id) {
-        DetalleVenta detalleVenta = detalleVentaRepository.findById(id).orElseThrow(() -> new RuntimeException("Error, detalle de venta a eliminar no encontrado"));
+        DetalleVenta detalleVenta = detalleVentaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Error, detalle de venta a eliminar no encontrado"));
         detalleVentaRepository.delete(detalleVenta);
     }
 
@@ -72,7 +73,7 @@ public class DetalleVentaServiceImpl implements DetalleVentaService {
 
     @Override
     public DetalleVentaResponse buscarPorId(Long id) {
-        DetalleVenta detalleVenta=detalleVentaRepository.findById(id).orElseThrow(()->new RuntimeException("Error, codigo de detalle de venta no existe."));
+        DetalleVenta detalleVenta=detalleVentaRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Error, codigo de detalle de venta no existe."));
         return detalleVentaMapper.entityToDto(detalleVenta, ventaMapper.entityToDto(
                 detalleVenta.getVenta()), productoMapper.entityToDto(detalleVenta.getProducto())
         );
